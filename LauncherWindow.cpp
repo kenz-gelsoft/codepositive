@@ -57,10 +57,6 @@
 #include <stdio.h>
 
 enum {
-    GO_BACK = 'goba',
-    GO_FORWARD = 'gofo',
-    STOP = 'stop',
-    GOTO_URL = 'goul',
     RELOAD = 'reld',
 
     TEXT_SIZE_INCREASE = 'tsin',
@@ -88,50 +84,12 @@ LauncherWindow::LauncherWindow(BRect frame, BWebView* webView,
 LauncherWindow::~LauncherWindow()
 {}
 
-void LauncherWindow::DispatchMessage(BMessage* message, BHandler* target)
-{
-	if (m_url && message->what == B_KEY_DOWN && target == m_url->TextView()) {
-		// Handle B_RETURN in the URL text control. This is the easiest
-		// way to react *only* when the user presses the return key in the
-		// address bar, as opposed to trying to load whatever is in there when
-		// the text control just goes out of focus.
-	    const char* bytes;
-	    if (message->FindString("bytes", &bytes) == B_OK
-	    	&& bytes[0] == B_RETURN) {
-	    	// Do it in such a way that the user sees the Go-button go down.
-	    	m_goButton->SetValue(B_CONTROL_ON);
-	    	UpdateIfNeeded();
-	    	m_goButton->Invoke();
-	    	snooze(1000);
-	    	m_goButton->SetValue(B_CONTROL_OFF);
-	    }
-	}
-	BWebWindow::DispatchMessage(message, target);
-}
-
 void LauncherWindow::MessageReceived(BMessage* message)
 {
     switch (message->what) {
     case RELOAD:
         CurrentWebView()->Reload();
         break;
-    case GOTO_URL: {
-        BString url;
-        if (message->FindString("url", &url) != B_OK)
-        	url = m_url->Text();
-        CurrentWebView()->LoadURL(url.String());
-        break;
-    }
-    case GO_BACK:
-        CurrentWebView()->GoBack();
-        break;
-    case GO_FORWARD:
-        CurrentWebView()->GoForward();
-        break;
-    case STOP:
-        CurrentWebView()->StopLoading();
-        break;
-
     case B_SIMPLE_DATA: {
         // User possibly dropped files on this window.
         // If there is more than one entry_ref, let the app handle it (open one
@@ -218,16 +176,9 @@ void LauncherWindow::LoadNegotiating(const BString& url, BWebView* view)
 
 void LauncherWindow::LoadCommitted(const BString& url, BWebView* view)
 {
-	// This hook is invoked when the load is commited.
-    if (m_url)
-        m_url->SetText(url.String());
-
     BString status("Loading: ");
     status << url;
     StatusChanged(status, view);
-
-    NavigationCapabilitiesChanged(m_BackButton->IsEnabled(),
-        m_ForwardButton->IsEnabled(), true, view);
 }
 
 void LauncherWindow::LoadProgress(float progress, BWebView* view)
@@ -250,19 +201,11 @@ void LauncherWindow::LoadFailed(const BString& url, BWebView* view)
 
 void LauncherWindow::LoadFinished(const BString& url, BWebView* view)
 {
-    // Update the URL again to handle cases where LoadCommitted is not called
-    // (for example when navigating to anchors in the same page).
-    if (m_url)
-        m_url->SetText(url.String());
-
     BString status(url);
     status << " finished.";
     StatusChanged(status, view);
     if (m_loadingProgressBar && !m_loadingProgressBar->IsHidden())
         m_loadingProgressBar->Hide();
-
-    NavigationCapabilitiesChanged(m_BackButton->IsEnabled(),
-        m_ForwardButton->IsEnabled(), false, view);
 }
 
 void LauncherWindow::SetToolBarsVisible(bool flag, BWebView* view)
@@ -293,14 +236,7 @@ void LauncherWindow::StatusChanged(const BString& statusText, BWebView* view)
 
 void LauncherWindow::NavigationCapabilitiesChanged(bool canGoBackward,
     bool canGoForward, bool canStop, BWebView* view)
-{
-    if (m_BackButton)
-        m_BackButton->SetEnabled(canGoBackward);
-    if (m_ForwardButton)
-        m_ForwardButton->SetEnabled(canGoForward);
-    if (m_StopButton)
-        m_StopButton->SetEnabled(canStop);
-}
+{}
 
 
 bool
@@ -322,17 +258,6 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
 	SetCurrentWebView(webView);
 
     if (toolbarPolicy == HaveToolbar) {
-        // Back, Forward & Stop
-        m_BackButton = new BButton("Back", new BMessage(GO_BACK));
-        m_ForwardButton = new BButton("Forward", new BMessage(GO_FORWARD));
-        m_StopButton = new BButton("Stop", new BMessage(STOP));
-
-        // URL
-        m_url = new BTextControl("url", "", "", NULL);
-
-        // Go
-        m_goButton = new BButton("", "Go", new BMessage(GOTO_URL));
-
         // Status Bar
         m_statusText = new BStringView("status", "");
         m_statusText->SetAlignment(B_ALIGN_LEFT);
@@ -359,15 +284,6 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
 
         // Layout
         AddChild(BGroupLayoutBuilder(B_VERTICAL, 0)
-            .Add(BGridLayoutBuilder(kElementSpacing, kElementSpacing)
-                .Add(m_BackButton, 0, 0)
-                .Add(m_ForwardButton, 1, 0)
-                .Add(m_StopButton, 2, 0)
-                .Add(m_url, 3, 0)
-                .Add(m_goButton, 4, 0)
-                .SetInsets(kInsetSpacing, kInsetSpacing, kInsetSpacing, kInsetSpacing)
-            )
-            .Add(new BSeparatorView(B_HORIZONTAL, B_PLAIN_BORDER))
             .Add(webView)
             .Add(new BSeparatorView(B_HORIZONTAL, B_PLAIN_BORDER))
             .Add(BGroupLayoutBuilder(B_HORIZONTAL, kElementSpacing)
@@ -383,14 +299,7 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
                 .SetInsets(kInsetSpacing, 0, kInsetSpacing, 0)
             )
         );
-
-        m_url->MakeFocus(true);
     } else {
-        m_BackButton = 0;
-        m_ForwardButton = 0;
-        m_StopButton = 0;
-        m_goButton = 0;
-        m_url = 0;
         m_statusText = 0;
         m_loadingProgressBar = 0;
         m_IncreaseButton = 0;

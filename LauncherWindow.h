@@ -38,10 +38,8 @@ class BButton;
 class BCheckBox;
 class BFilePanel;
 class BLayoutItem;
-class BMenuBar;
 class BStatusBar;
 class BStringView;
-class BTextControl;
 class BWebView;
 
 enum ToolbarPolicy {
@@ -61,7 +59,6 @@ public:
     LauncherWindow(BRect frame, BWebView* view, ToolbarPolicy = HaveToolbar);
     virtual ~LauncherWindow();
 
-	virtual void DispatchMessage(BMessage* message, BHandler* target);
     virtual void MessageReceived(BMessage* message);
     virtual bool QuitRequested();
 
@@ -92,12 +89,6 @@ private:
     void updateTitle(const BString& title);
 
 private:
-    BMenuBar* m_menuBar;
-    BButton* m_BackButton;
-    BButton* m_ForwardButton;
-    BButton* m_StopButton;
-    BButton* m_goButton;
-    BTextControl* m_url;
     BStringView* m_statusText;
     BStatusBar* m_loadingProgressBar;
     BButton* m_IncreaseButton;
