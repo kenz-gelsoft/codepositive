@@ -100,7 +100,6 @@ private:
     BTextControl* m_url;
     BStringView* m_statusText;
     BStatusBar* m_loadingProgressBar;
-    BFilePanel* m_saveFilePanel;
 };
 
 #endif // LauncherWindow_h

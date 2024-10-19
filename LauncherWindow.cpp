@@ -86,9 +86,7 @@ LauncherWindow::LauncherWindow(BRect frame, BWebView* webView,
 }
 
 LauncherWindow::~LauncherWindow()
-{
-    delete m_saveFilePanel;
-}
+{}
 
 void LauncherWindow::DispatchMessage(BMessage* message, BHandler* target)
 {
@@ -399,8 +397,6 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
             .Add(webView)
         );
     }
-
-    m_saveFilePanel = 0;
 
     AddShortcut('R', B_COMMAND_KEY, new BMessage(RELOAD));
 
