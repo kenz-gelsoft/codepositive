@@ -1,14 +1,18 @@
+cmake_minimum_required(VERSION 3.30)
+project(CodePositive)
+
 SET(HaikuLauncher_SOURCES
-	${TOOLS_DIR}/HaikuLauncher/DownloadProgressView.cpp
-	${TOOLS_DIR}/HaikuLauncher/DownloadWindow.cpp
-    ${TOOLS_DIR}/HaikuLauncher/LauncherApp.cpp
-    ${TOOLS_DIR}/HaikuLauncher/LauncherWindow.cpp
-    ${TOOLS_DIR}/HaikuLauncher/AuthenticationPanel.cpp
+	DownloadProgressView.cpp
+	DownloadWindow.cpp
+	LauncherApp.cpp
+	LauncherWindow.cpp
+	AuthenticationPanel.cpp
 )
 
 SET(HaikuLauncher_LIBRARIES
     JavaScriptCore
-    WebCore
+#    WebCore
+    shared
     WebKitLegacy
     ${LIBXML2_LIBRARIES}
     ${LIBXSLT_LIBRARIES}
