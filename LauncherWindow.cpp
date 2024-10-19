@@ -350,9 +350,9 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
         m_loadingProgressBar->SetBarHeight(12);
 
         // Text Size Buttons
-        m_IncreaseButton = new StatusButton("", "+", new BMessage(TEXT_SIZE_INCREASE));
-        m_ResetSizeButton = new StatusButton("", "100%", new BMessage(TEXT_SIZE_RESET));
-        m_DecreaseButton = new StatusButton("", "-", new BMessage(TEXT_SIZE_DECREASE));
+        m_IncreaseButton = new BButton("", "+", new BMessage(TEXT_SIZE_INCREASE));
+        m_ResetSizeButton = new BButton("", "100%", new BMessage(TEXT_SIZE_RESET));
+        m_DecreaseButton = new BButton("", "-", new BMessage(TEXT_SIZE_DECREASE));
 
         const float kInsetSpacing = 5;
         const float kElementSpacing = 7;
