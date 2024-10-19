@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.30)
 project(CodePositive)
 
 SET(HaikuLauncher_SOURCES
-	DownloadProgressView.cpp
-	DownloadWindow.cpp
 	LauncherApp.cpp
 	LauncherWindow.cpp
 	AuthenticationPanel.cpp
