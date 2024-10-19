@@ -322,14 +322,6 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
 	SetCurrentWebView(webView);
 
     if (toolbarPolicy == HaveToolbar) {
-        // Menu
-        m_menuBar = new BMenuBar("Main menu");
-        BMenu* menu = new BMenu("Text");
-        menu->AddItem(new BMenuItem("Increase size", new BMessage(TEXT_SIZE_INCREASE), '+'));
-        menu->AddItem(new BMenuItem("Decrease size", new BMessage(TEXT_SIZE_DECREASE), '-'));
-        menu->AddItem(new BMenuItem("Reset size", new BMessage(TEXT_SIZE_RESET), '0'));
-        m_menuBar->AddItem(menu);
-
         // Back, Forward & Stop
         m_BackButton = new BButton("Back", new BMessage(GO_BACK));
         m_ForwardButton = new BButton("Forward", new BMessage(GO_FORWARD));
@@ -357,12 +349,16 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
         m_loadingProgressBar->Hide();
         m_loadingProgressBar->SetBarHeight(12);
 
+        // Text Size Buttons
+        m_IncreaseButton = new StatusButton("", "+", new BMessage(TEXT_SIZE_INCREASE));
+        m_ResetSizeButton = new StatusButton("", "100%", new BMessage(TEXT_SIZE_RESET));
+        m_DecreaseButton = new StatusButton("", "-", new BMessage(TEXT_SIZE_DECREASE));
+
         const float kInsetSpacing = 5;
         const float kElementSpacing = 7;
 
         // Layout
         AddChild(BGroupLayoutBuilder(B_VERTICAL, 0)
-            .Add(m_menuBar)
             .Add(BGridLayoutBuilder(kElementSpacing, kElementSpacing)
                 .Add(m_BackButton, 0, 0)
                 .Add(m_ForwardButton, 1, 0)
@@ -377,6 +373,12 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
             .Add(BGroupLayoutBuilder(B_HORIZONTAL, kElementSpacing)
                 .Add(m_statusText)
                 .Add(m_loadingProgressBar, 0.2)
+	            .Add(BGridLayoutBuilder(0, 0)
+	                .Add(m_IncreaseButton, 0, 0)
+	                .Add(m_ResetSizeButton, 1, 0)
+	                .Add(m_DecreaseButton, 2, 0)
+	                , 0.1
+	            )
                 .AddStrut(12 - kElementSpacing)
                 .SetInsets(kInsetSpacing, 0, kInsetSpacing, 0)
             )
@@ -389,9 +391,11 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
         m_StopButton = 0;
         m_goButton = 0;
         m_url = 0;
-        m_menuBar = 0;
         m_statusText = 0;
         m_loadingProgressBar = 0;
+        m_IncreaseButton = 0;
+        m_ResetSizeButton = 0;
+        m_DecreaseButton = 0;
 
         AddChild(BGroupLayoutBuilder(B_VERTICAL)
             .Add(webView)

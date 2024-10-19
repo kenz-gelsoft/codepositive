@@ -31,10 +31,10 @@
 #define LauncherWindow_h
 
 #include "WebWindow.h"
+#include <Button.h>
 #include <Messenger.h>
 #include <String.h>
 
-class BButton;
 class BCheckBox;
 class BFilePanel;
 class BLayoutItem;
@@ -53,6 +53,19 @@ enum {
     NEW_WINDOW = 'nwnd',
     WINDOW_OPENED = 'wndo',
     WINDOW_CLOSED = 'wndc',
+};
+
+class StatusButton: public BButton
+{
+public:
+	StatusButton(const char* name, const char* label, BMessage* message) :
+		BButton(name, label, message)
+	{}
+	virtual void GetPreferredSize(float* width, float* height)
+	{
+		*width  = 20;
+		*height = 10;
+	}
 };
 
 class LauncherWindow : public BWebWindow {
@@ -100,6 +113,9 @@ private:
     BTextControl* m_url;
     BStringView* m_statusText;
     BStatusBar* m_loadingProgressBar;
+    StatusButton* m_IncreaseButton;
+    StatusButton* m_ResetSizeButton;
+    StatusButton* m_DecreaseButton;
 };
 
 #endif // LauncherWindow_h
