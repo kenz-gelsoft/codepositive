@@ -57,9 +57,6 @@
 #include <stdio.h>
 
 enum {
-	OPEN_LOCATION = 'open',
-	OPEN_INSPECTOR = 'insp',
-	SAVE_PAGE = 'save',
     GO_BACK = 'goba',
     GO_FORWARD = 'gofo',
     STOP = 'stop',
@@ -117,39 +114,6 @@ void LauncherWindow::DispatchMessage(BMessage* message, BHandler* target)
 void LauncherWindow::MessageReceived(BMessage* message)
 {
     switch (message->what) {
-    case OPEN_LOCATION:
-        if (m_url) {
-        	if (m_url->TextView()->IsFocus())
-        	    m_url->TextView()->SelectAll();
-        	else
-        	    m_url->MakeFocus(true);
-        }
-    	break;
-    case OPEN_INSPECTOR: {
-        // FIXME: wouldn't the view better be in the same window?
-        BRect frame = Frame();
-        frame.OffsetBy(20, 20);
-        LauncherWindow* inspectorWindow = new LauncherWindow(frame);
-        inspectorWindow->Show();
-
-        CurrentWebView()->SetInspectorView(inspectorWindow->CurrentWebView());
-        break;
-    }
-	case SAVE_PAGE: {
-		BMessage* message = new BMessage(B_SAVE_REQUESTED);
-		message->AddPointer("page", CurrentWebView()->WebPage());
-        
-        if (m_saveFilePanel == NULL) {
-	        m_saveFilePanel = new BFilePanel(B_SAVE_PANEL, NULL, NULL,
-                B_DIRECTORY_NODE, false);
-        }
-
-        m_saveFilePanel->SetSaveText(CurrentWebView()->WebPage()->MainFrameTitle());
-        m_saveFilePanel->SetMessage(message);
-		m_saveFilePanel->Show();
-		break;
-	}
-
     case RELOAD:
         CurrentWebView()->Reload();
         break;
@@ -362,23 +326,7 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
     if (toolbarPolicy == HaveToolbar) {
         // Menu
         m_menuBar = new BMenuBar("Main menu");
-        BMenu* menu = new BMenu("Window");
-        BMessage* newWindowMessage = new BMessage(NEW_WINDOW);
-        newWindowMessage->AddString("url", "");
-        BMenuItem* newItem = new BMenuItem("New", newWindowMessage, 'N');
-        menu->AddItem(newItem);
-        newItem->SetTarget(be_app);
-        menu->AddItem(new BMenuItem("Open location", new BMessage(OPEN_LOCATION), 'L'));
-        menu->AddItem(new BMenuItem("Inspect page", new BMessage(OPEN_INSPECTOR), 'I'));
-	    menu->AddItem(new BMenuItem("Save page", new BMessage(SAVE_PAGE), 'S'));
-        menu->AddSeparatorItem();
-        menu->AddItem(new BMenuItem("Close", new BMessage(B_QUIT_REQUESTED), 'W', B_SHIFT_KEY));
-        BMenuItem* quitItem = new BMenuItem("Quit", new BMessage(B_QUIT_REQUESTED), 'Q');
-        menu->AddItem(quitItem);
-        quitItem->SetTarget(be_app);
-        m_menuBar->AddItem(menu);
-
-        menu = new BMenu("Text");
+        BMenu* menu = new BMenu("Text");
         menu->AddItem(new BMenuItem("Increase size", new BMessage(TEXT_SIZE_INCREASE), '+'));
         menu->AddItem(new BMenuItem("Decrease size", new BMessage(TEXT_SIZE_DECREASE), '-'));
         menu->AddItem(new BMenuItem("Reset size", new BMessage(TEXT_SIZE_RESET), '0'));
