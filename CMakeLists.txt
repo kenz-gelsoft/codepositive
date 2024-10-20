@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.30)
 project(CodePositive)
 
-SET(HaikuLauncher_SOURCES
+SET(CodePositive_SOURCES
 	LauncherApp.cpp
 	LauncherWindow.cpp
 	AuthenticationPanel.cpp
 )
 
-SET(HaikuLauncher_LIBRARIES
+SET(CodePositive_LIBRARIES
     JavaScriptCore
 #    WebCore
     shared
@@ -26,7 +26,7 @@ INCLUDE_DIRECTORIES(
 )
 
 add_definitions(-D_DEFAULT_SOURCE)
-ADD_EXECUTABLE(HaikuLauncher ${HaikuLauncher_SOURCES})
-TARGET_LINK_LIBRARIES(HaikuLauncher ${HaikuLauncher_LIBRARIES})
-SET_TARGET_PROPERTIES(HaikuLauncher PROPERTIES FOLDER "Tools")
-SET_TARGET_PROPERTIES(HaikuLauncher PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+ADD_EXECUTABLE(CodePositive ${CodePositive_SOURCES})
+TARGET_LINK_LIBRARIES(CodePositive ${CodePositive_LIBRARIES})
+SET_TARGET_PROPERTIES(CodePositive PROPERTIES FOLDER "Tools")
+SET_TARGET_PROPERTIES(CodePositive PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")

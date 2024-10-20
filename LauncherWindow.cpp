@@ -65,7 +65,7 @@ enum {
 };
 
 LauncherWindow::LauncherWindow(BRect frame, ToolbarPolicy toolbarPolicy)
-    : BWebWindow(frame, "HaikuLauncher",
+    : BWebWindow(frame, "CodePositive",
         B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
         B_AUTO_UPDATE_SIZE_LIMITS | B_ASYNCHRONOUS_CONTROLS)
 {
@@ -74,7 +74,7 @@ LauncherWindow::LauncherWindow(BRect frame, ToolbarPolicy toolbarPolicy)
 
 LauncherWindow::LauncherWindow(BRect frame, BWebView* webView,
 		ToolbarPolicy toolbarPolicy)
-    : BWebWindow(frame, "HaikuLauncher",
+    : BWebWindow(frame, "CodePositive",
         B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
         B_AUTO_UPDATE_SIZE_LIMITS | B_ASYNCHRONOUS_CONTROLS)
 {
@@ -319,8 +319,8 @@ void LauncherWindow::init(BWebView* webView, ToolbarPolicy toolbarPolicy)
 void LauncherWindow::updateTitle(const BString& title)
 {
     BString windowTitle = title;
-    if (windowTitle.Length() > 0)
-        windowTitle << " - ";
-    windowTitle << "HaikuLauncher";
+//    if (windowTitle.Length() > 0)
+//        windowTitle << " - ";
+//    windowTitle << "HaikuLauncher";
     SetTitle(windowTitle.String());
 }
